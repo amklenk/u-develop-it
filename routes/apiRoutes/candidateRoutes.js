@@ -54,7 +54,7 @@ router.post("/candidate", ({ body }, res) => {
     "industry_connected"
   );
   if (errors) {
-    res.status(400).json({ errors: errors });
+    res.status(400).json({ error: errors });
     return;
   }
   const sql = `INSERT INTO candidates (first_name, last_name, industry_connected)
@@ -75,6 +75,7 @@ router.post("/candidate", ({ body }, res) => {
 
 //updates a candidate's party
 router.put("/candidate/:id", (req, res) => {
+  //data validation
   const errors = inputCheck(req.body, "party_id");
 
   if (errors) {
@@ -108,9 +109,10 @@ router.put("/candidate/:id", (req, res) => {
 router.delete("/candidate/:id", (req, res) => {
   const sql = `DELETE FROM candidates where id = ?`;
   const params = [req.params.id];
+
   db.query(sql, params, (err, result) => {
     if (err) {
-      res.statusMessage(400).json({ error: res.message });
+      res.status(400).json({ error: res.message });
     } else if (!result.affectedRows) {
       res.json({
         message: "Candidate not found",
